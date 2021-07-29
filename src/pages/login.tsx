@@ -57,7 +57,8 @@ export const Login = () => {
 
   // * useMutation의 파라미터로 mutation에 필요한 파라미터를 바로 넣어줄 수 있다.
   // * data: loginMutationResult => data 변수명을 loginMutationResult로 변경
-  const [loginMutation, { data: loginMutationResult }] = useMutation<
+  // * loading: mutation이 발생하면 loading은 true나 false 상태
+  const [loginMutation, { data: loginMutationResult, loading }] = useMutation<
     loginMutation,
     loginMutationVariables
   >(LOGIN_MUTATION, {
@@ -79,18 +80,22 @@ export const Login = () => {
   // * data: 실제로 backend에서 넘어온 데이터
 
   const onSubmit = () => {
-    console.log("getValues(): ", getValues());
-    const { email, password } = getValues();
-    // * codegen을 이용해 만들어준 interface를 useMutation의 type으로 설정해줬기 때문에 variables 타입들이 알아서 지정된다.
-    loginMutation({
-      // * 아래 항목은 원래 loginMutaion의 파라미터로 넣어준 값
-      variables: {
-        loginInput: {
-          email,
-          password,
+    // * mutation에 연결하면 성공하거나 실패할 때 까지 loading은 true 상태
+    // * 즉 loading이 false인 경우에만(mutation연결 안 된 경우에만) id,pw를 제출하도록 설정한 것
+    if (!loading) {
+      console.log("getValues(): ", getValues());
+      const { email, password } = getValues();
+      // * codegen을 이용해 만들어준 interface를 useMutation의 type으로 설정해줬기 때문에 variables 타입들이 알아서 지정된다.
+      loginMutation({
+        // * 아래 항목은 원래 loginMutaion의 파라미터로 넣어준 값
+        variables: {
+          loginInput: {
+            email,
+            password,
+          },
         },
-      },
-    });
+      });
+    }
   };
 
   return (
@@ -143,7 +148,7 @@ export const Login = () => {
             //   Password must be more than 10 chars
             // </span>
           )}
-          <button className="btn mt-3">Login</button>
+          <button className="btn mt-3">{loading ? "Loading" : "Login"}</button>
           {/* backend 연결 후 넘어온 output에서 error값이 존재할 경우*/}
           {loginMutationResult?.login.error && (
             <FormError errorMessage={loginMutationResult.login.error} />
