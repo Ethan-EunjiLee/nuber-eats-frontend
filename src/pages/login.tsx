@@ -7,6 +7,8 @@ import {
   loginMutationVariables,
 } from "../__generated__/loginMutation";
 import nuberLogo from "../images/uberEats.svg";
+import { Button } from "../components/button";
+import { Link } from "react-router-dom";
 
 // * ts + useForm 통합해서 사용하려면 type을 보여줄 수 있도록 interface 설정 필요
 interface ILoginForm {
@@ -36,10 +38,12 @@ export const Login = () => {
   const {
     register,
     getValues,
-    formState: { errors }, //* errors를 이용하면 validation 후 message 출력 기능 구현 가능  */
+    formState: { errors, isValid }, //* errors를 이용하면 validation 후 message 출력 기능 구현 가능  */
     handleSubmit,
     watch, // * 실시간으로 변화를 감지
-  } = useForm<ILoginForm>();
+  } = useForm<ILoginForm>({
+    mode: "onBlur", // * mode를 onBlur로 설정할 경우 포커스 나갈 때 마다 validation이 체크된다.
+  });
 
   // * useMutation의 옵션으로 넣어줄 onCompleted 함수 구현
   const onCompleted = (loginMutationResult: loginMutation) => {
@@ -98,14 +102,17 @@ export const Login = () => {
       });
     }
   };
-
+  // * lg:mt-28 => 큰 스크린용은 따로 설정
   return (
-    <div className="h-screen flex items-center flex-col mt-28">
-      <div className="w-full max-w-screen-sm">
-        <img src={nuberLogo} className="w-52 mb-5" />
+    <div className="h-screen flex items-center flex-col mt-10 lg:mt-28">
+      <div className="w-full max-w-screen-sm flex flex-col px-5 items-center">
+        <img src={nuberLogo} className="w-52 mb-10" />
+        <h4 className="w-full font-medium text-left text-3xl mb-5">
+          Welcome back
+        </h4>
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="grid gap-3 mt-5 px-5"
+          className="grid gap-3 mt-5 w-full mb-5"
         >
           <input
             {
@@ -149,12 +156,18 @@ export const Login = () => {
             //   Password must be more than 10 chars
             // </span>
           )}
-          <button className="btn mt-3">{loading ? "Loading" : "Login"}</button>
+          <Button canClick={isValid} loading={loading} actionText={"Log in"} />
           {/* backend 연결 후 넘어온 output에서 error값이 존재할 경우*/}
           {loginMutationResult?.login.error && (
             <FormError errorMessage={loginMutationResult.login.error} />
           )}
         </form>
+        <div>
+          New to Nuber?{" "}
+          <Link to="/create-account" className="text-lime-600 hover:underline">
+            create an account
+          </Link>
+        </div>
       </div>
     </div>
   );

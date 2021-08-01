@@ -25,7 +25,7 @@
     "web-vitals": "^1.0.1"
   },
   "scripts": {
-    "tailwind:build": "tailwind build -i src/styles/tailwind.css -o ./src/styles/styles.css",
+    "tailwind:build": "tailwind build -i ./src/styles/tailwind.css -o ./src/styles/styles.css",
     "start": "yarn run apollo:codegen & yarn run tailwind:build & react-scripts start",
     "apollo:codegen": "rimraf src/__generated__ && apollo client:codegen src/__generated__ --target=typescript --outputFlat",
     "build": "react-scripts build",
