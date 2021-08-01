@@ -9,6 +9,7 @@ import {
 import nuberLogo from "../images/uberEats.svg";
 import { Button } from "../components/button";
 import { Link } from "react-router-dom";
+import Helmet from "react-helmet";
 
 // * ts + useForm 통합해서 사용하려면 type을 보여줄 수 있도록 interface 설정 필요
 interface ILoginForm {
@@ -42,7 +43,7 @@ export const Login = () => {
     handleSubmit,
     watch, // * 실시간으로 변화를 감지
   } = useForm<ILoginForm>({
-    mode: "onBlur", // * mode를 onBlur로 설정할 경우 포커스 나갈 때 마다 validation이 체크된다.
+    mode: "onChange", // * mode를 onBlur로 설정할 경우 포커스 나갈 때 마다 validation이 체크된다.
   });
 
   // * useMutation의 옵션으로 넣어줄 onCompleted 함수 구현
@@ -105,6 +106,9 @@ export const Login = () => {
   // * lg:mt-28 => 큰 스크린용은 따로 설정
   return (
     <div className="h-screen flex items-center flex-col mt-10 lg:mt-28">
+      <Helmet>
+        <title>Login | Nuber Eats</title>
+      </Helmet>
       <div className="w-full max-w-screen-sm flex flex-col px-5 items-center">
         <img src={nuberLogo} className="w-52 mb-10" />
         <h4 className="w-full font-medium text-left text-3xl mb-5">
